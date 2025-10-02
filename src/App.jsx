@@ -8,13 +8,14 @@ import './App.css';
 function App() {
   return (
     <Router>
-      <Layout>
-        <Routes>
+      <Routes>
+        {/* Layout as parent route so its <Outlet /> renders children */}
+        <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/profile/:userId" element={<Profile />} />
           {/* Add more routes as needed */}
-        </Routes>
-      </Layout>
+        </Route>
+      </Routes>
     </Router>
   );
 }

@@ -1,24 +1,24 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useQuery } from '@apollo/client';
+import { GET_USER } from '../graphql/queries';
 import { CameraIcon, EllipsisHorizontalIcon } from '@heroicons/react/24/outline';
-import { formatDate, getUserById, getPostsByUserId } from '../data/mockData';
 import Avatar from '../components/shared/Avatar';
 import Post from '../components/feed/Post';
 
 const Profile = () => {
   const { userId } = useParams();
   const [activeTab, setActiveTab] = useState('posts');
-  const user = getUserById(parseInt(userId)) || {};
-  const userPosts = getPostsByUserId(parseInt(userId));
-  const friends = []; // We'll implement this later
+  const { loading, error, data } = useQuery(GET_USER, {
+    variables: { userId: parseInt(userId) },
+  });
 
-  // Mock friends data
-  for (let i = 1; i <= 6; i++) {
-    if (i !== parseInt(userId)) {
-      const friend = getUserById(i);
-      if (friend) friends.push(friend);
-    }
-  }
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error :(</p>;
+
+  const user = data.user;
+  const userPosts = user.posts;
+  const friends = user.friends;
 
   return (
     <div className="space-y-4">
@@ -36,7 +36,7 @@ const Profile = () => {
         <div className="flex flex-col md:flex-row md:items-end -mt-16 relative">
           <div className="relative group">
             <Avatar 
-              src={user.profilePic} 
+              src={user.profile_pic} 
               alt={user.name} 
               size="xl" 
               className="border-4 border-white"
@@ -134,10 +134,10 @@ const Profile = () => {
             <p className="text-sm text-facebook-500 mb-3">{friends.length} friends</p>
             <div className="grid grid-cols-3 gap-3">
               {friends.slice(0, 6).map((friend) => (
-                <div key={friend.id} className="space-y-1 cursor-pointer">
+                <div key={friend.user_id} className="space-y-1 cursor-pointer">
                   <div className="aspect-square bg-facebook-200 rounded-md overflow-hidden">
                     <img 
-                      src={friend.profilePic} 
+                      src={friend.profile_pic} 
                       alt={friend.name} 
                       className="w-full h-full object-cover"
                     />
@@ -154,7 +154,7 @@ const Profile = () => {
           {/* Create Post */}
           <div className="bg-white rounded-lg shadow p-4">
             <div className="flex items-center space-x-2">
-              <Avatar src={user.profilePic} alt={user.name} size="md" />
+              <Avatar src={user.profile_pic} alt={user.name} size="md" />
               <button 
                 className="flex-1 bg-facebook-100 hover:bg-facebook-200 text-facebook-600 text-left p-2 rounded-full transition-colors text-sm"
                 onClick={() => document.getElementById('profilePostInput')?.focus()}
@@ -167,7 +167,7 @@ const Profile = () => {
           {/* Posts */}
           {userPosts.length > 0 ? (
             userPosts.map((post) => (
-              <Post key={post.id} post={post} />
+              <Post key={post.post_id} post={post} />
             ))
           ) : (
             <div className="bg-white rounded-lg shadow p-8 text-center">

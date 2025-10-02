@@ -1,109 +1,111 @@
+// mockData.js
+
 // Mock Users
 export const users = [
   {
-    id: 1,
+    user_id: 1,
     name: 'John Doe',
-    email: 'john@example.com',
-    profilePic: 'https://randomuser.me/api/portraits/men/1.jpg',
-    coverPic: 'https://picsum.photos/800/300?random=1',
-    friends: [2, 3, 4],
+    profile_pic: 'https://randomuser.me/api/portraits/men/1.jpg',
   },
   {
-    id: 2,
+    user_id: 2,
     name: 'Jane Smith',
-    email: 'jane@example.com',
-    profilePic: 'https://randomuser.me/api/portraits/women/1.jpg',
-    coverPic: 'https://picsum.photos/800/300?random=2',
-    friends: [1, 3],
+    profile_pic: 'https://randomuser.me/api/portraits/women/1.jpg',
   },
   {
-    id: 3,
+    user_id: 3,
     name: 'Mike Johnson',
-    email: 'mike@example.com',
-    profilePic: 'https://randomuser.me/api/portraits/men/2.jpg',
-    coverPic: 'https://picsum.photos/800/300?random=3',
-    friends: [1, 2, 4],
+    profile_pic: 'https://randomuser.me/api/portraits/men/2.jpg',
   },
   {
-    id: 4,
+    user_id: 4,
     name: 'Sarah Williams',
-    email: 'sarah@example.com',
-    profilePic: 'https://randomuser.me/api/portraits/women/2.jpg',
-    coverPic: 'https://picsum.photos/800/300?random=4',
-    friends: [1, 3],
+    profile_pic: 'https://randomuser.me/api/portraits/women/2.jpg',
+  },
+];
+
+// Mock Groups
+export const groups = [
+  {
+    group_id: 1,
+    name: 'React Developers',
+  },
+  {
+    group_id: 2,
+    name: 'Travel Enthusiasts',
   },
 ];
 
 // Mock Posts
 export const posts = [
   {
-    id: 1,
-    userId: 1,
-    content: 'Just had an amazing day at the beach! 🏖️',
-    createdAt: '2025-09-26T10:30:00Z',
-    likes: [2, 3],
-    comments: [1, 2],
+    post_id: 1,
+    post_content: 'Just had an amazing day at the beach! 🏖️',
+    posted_at: '2025-09-26T10:30:00Z',
+    posted_by: users[0],
+    group: groups[1],
+    reactions: [
+      {
+        reaction: 'like',
+        reacted_by: users[1],
+      },
+      {
+        reaction: 'love',
+        reacted_by: users[2],
+      },
+    ],
+    comments: [
+      {
+        comment_id: 1,
+        comment_content: 'Looks amazing! 😍',
+        commented_at: '2025-09-26T10:35:00Z',
+        commented_by: users[1],
+        replies: [],
+      },
+      {
+        comment_id: 2,
+        comment_content: 'Wish I was there!',
+        commented_at: '2025-09-26T11:20:00Z',
+        commented_by: users[2],
+        replies: [
+          {
+            comment_id: 4,
+            comment_content: 'Me too!',
+            commented_at: '2025-09-26T11:25:00Z',
+            commented_by: users[3],
+          },
+        ],
+      },
+    ],
   },
   {
-    id: 2,
-    userId: 2,
-    content: 'Working on a new project. Stay tuned! 👨‍💻',
-    image: 'https://picsum.photos/800/400?random=11',
-    createdAt: '2025-09-25T15:45:00Z',
-    likes: [1, 3, 4],
-    comments: [3],
-  },
-  {
-    id: 3,
-    userId: 3,
-    content: 'Beautiful sunset today! 🌅',
-    image: 'https://picsum.photos/800/400?random=12',
-    createdAt: '2025-09-24T18:20:00Z',
-    likes: [1, 2, 4],
-    comments: [],
+    post_id: 2,
+    post_content: 'Working on a new project. Stay tuned! 👨‍💻',
+    posted_at: '2025-09-25T15:45:00Z',
+    posted_by: users[1],
+    group: groups[0],
+    reactions: [
+      {
+        reaction: 'like',
+        reacted_by: users[0],
+      },
+      {
+        reaction: 'like',
+        reacted_by: users[2],
+      },
+      {
+        reaction: 'celebrate',
+        reacted_by: users[3],
+      },
+    ],
+    comments: [
+      {
+        comment_id: 3,
+        comment_content: "Can't wait to see it!",
+        commented_at: '2025-09-25T16:00:00Z',
+        commented_by: users[0],
+        replies: [],
+      },
+    ],
   },
 ];
-
-// Mock Comments
-export const comments = [
-  {
-    id: 1,
-    postId: 1,
-    userId: 2,
-    content: 'Looks amazing! 😍',
-    createdAt: '2025-09-26T10:35:00Z',
-  },
-  {
-    id: 2,
-    postId: 1,
-    userId: 3,
-    content: 'Wish I was there!',
-    createdAt: '2025-09-26T11:20:00Z',
-  },
-  {
-    id: 3,
-    postId: 2,
-    userId: 1,
-    content: 'Can\'t wait to see it!',
-    createdAt: '2025-09-25T16:00:00Z',
-  },
-];
-
-// Helper function to get a user by ID
-export const getUserById = (userId) => users.find(user => user.id === userId);
-
-// Helper function to get posts by user ID
-export const getPostsByUserId = (userId) => 
-  posts.filter(post => post.userId === userId);
-
-// Helper function to get comments for a post
-export const getCommentsByPostId = (postId) => 
-  comments.filter(comment => comment.postId === postId);
-
-// Helper function to format date
-const formatDate = (dateString) => {
-  const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-  return new Date(dateString).toLocaleDateString(undefined, options);
-};
-
-export { formatDate };

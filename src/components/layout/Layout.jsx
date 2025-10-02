@@ -9,7 +9,7 @@ const Layout = () => {
       <Header />
       <div className="flex pt-16">
         <Sidebar />
-        <main className="flex-1 p-4 md:p-6 max-w-2xl mx-auto">
+        <main className="flex-1 p-4 md:p-6 max-w-4xl mx-auto">
           <Outlet />
         </main>
         {/* Right sidebar - Widgets */}

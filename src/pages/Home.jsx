@@ -1,29 +1,37 @@
 import React, { useState } from 'react';
-import { PhotoIcon, FaceSmileIcon, VideoCameraIcon, MapPinIcon, CalendarIcon } from '@heroicons/react/24/solid';
+import { gql, useQuery } from '@apollo/client';
+import { GET_POSTS } from '../graphql/queries';
+import { PhotoIcon, FaceSmileIcon, VideoCameraIcon } from '@heroicons/react/24/solid';
 import Avatar from '../components/shared/Avatar';
 import Button from '../components/shared/Button';
 import Post from '../components/feed/Post';
-import { posts, getUserById } from '../data/mockData';
+import { users } from '../data/mockData'; // Temporary, for currentUser
 
 const Home = () => {
   const [postContent, setPostContent] = useState('');
-  const currentUser = getUserById(1);
+  const { loading, error, data } = useQuery(GET_POSTS);
+  const currentUser = users[0]; // Temporary
 
   const handlePostSubmit = (e) => {
     e.preventDefault();
     if (!postContent.trim()) return;
     
-    // In a real app, this would be an API call
+    // In a real app, this would be a GraphQL mutation
     console.log('Posting:', postContent);
     setPostContent('');
   };
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error :(</p>;
+
+  const posts = data.posts;
 
   return (
     <div className="space-y-4">
       {/* Create Post */}
       <div className="bg-white rounded-lg shadow p-4">
         <div className="flex items-center space-x-2 mb-4">
-          <Avatar src={currentUser.profilePic} alt={currentUser.name} size="md" />
+          <Avatar src={currentUser.profile_pic} alt={currentUser.name} size="md" />
           <button 
             onClick={() => document.getElementById('postInput').focus()}
             className="flex-1 bg-facebook-100 hover:bg-facebook-200 text-facebook-600 text-left p-2 rounded-full transition-colors"
@@ -91,7 +99,7 @@ const Home = () => {
       {/* Posts Feed */}
       <div className="space-y-4">
         {posts.map((post) => (
-          <Post key={post.id} post={post} />
+          <Post key={post.post_id} post={post} />
         ))}
       </div>
     </div>
