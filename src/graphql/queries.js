@@ -2,43 +2,40 @@ import { gql } from '@apollo/client';
 
 export const GET_POSTS = gql`
   query GetPosts {
-    posts {
-      post_id
-      post_content
-      posted_at
-      posted_by {
-        user_id
+    allPosts {
+      postId
+      content
+      postedAt
+      postedBy {
+        userId
         name
-        profile_pic
-      }
-      group {
-        group_id
-        name
+        profilePic
       }
       reactions {
         reaction
-        reacted_by {
-          user_id
+        reactedBy {
+          userId
           name
+          profilePic
         }
       }
       comments {
-        comment_id
-        comment_content
-        commented_at
-        commented_by {
-          user_id
+        commentId
+        content
+        commentedAt
+        commentedBy {
+          userId
           name
-          profile_pic
+          profilePic
         }
         replies {
-          comment_id
-          comment_content
-          commented_at
-          commented_by {
-            user_id
+          commentId
+          content
+          commentedAt
+          commentedBy {
+            userId
             name
-            profile_pic
+            profilePic
           }
         }
       }
@@ -47,30 +44,47 @@ export const GET_POSTS = gql`
 `;
 
 export const GET_USER = gql`
-  query GetUser($userId: ID!) {
-    user(id: $userId) {
-      user_id
-      name
-      profile_pic
-      posts {
-        post_id
-        post_content
-        posted_at
-      }
-      friends {
-        user_id
-        name
-        profile_pic
-      }
+    query GetUser($userId: Int!) {
+        user(userId: $userId) {
+            userId
+            name
+            profilePic
+        }
     }
-  }
 `;
 
+
+export const GET_USER_POSTS = gql`
+    query GetUserPosts($userId: Int!) {
+        allPostsByUser(userId: $userId) {
+            postId
+            content
+            postedAt
+        }
+    }
+`;
+
+
 export const GET_GROUPS = gql`
-  query GetGroups {
-    groups {
-      group_id
+    query GetGroups {
+        allGroups {
+            id
+            name
+            members {
+                userId
+                name
+                profilePic
+            }
+        }
+    }
+`;
+
+export const GET_CURRENT_USER = gql`
+  query GetCurrentUser($userId: Int!) {
+    user(userId: $userId) {
+      userId
       name
+      profilePic
     }
   }
 `;

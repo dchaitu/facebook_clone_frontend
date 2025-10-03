@@ -19,6 +19,7 @@ const Post = ({ post }) => {
   const [comment, setComment] = useState('');
   const [showComments, setShowComments] = useState(false);
   const user = post.posted_by;
+  console.log("Post user ",user)
   const likeCount = post.reactions.length;
 
   const handleLike = () => {
@@ -39,7 +40,7 @@ const Post = ({ post }) => {
       {/* Post header */}
       <div className="flex justify-between items-center mb-3">
         <div className="flex items-center space-x-2">
-          <Avatar src={user.profile_pic} alt={user.name} size="md" />
+          <Avatar src={user.profilePic} alt={user.name} size="md" />
           <div>
             <h3 className="font-semibold">{user.name}</h3>
             <p className="text-xs text-facebook-500">{formatDate(post.posted_at)}</p>

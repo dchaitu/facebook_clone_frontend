@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { gql, useQuery } from '@apollo/client';
-import { GET_POSTS } from '../graphql/queries';
+import { gql } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
+import {GET_CURRENT_USER, GET_POSTS, GET_USER} from '../graphql/queries';
 import { PhotoIcon, FaceSmileIcon, VideoCameraIcon } from '@heroicons/react/24/solid';
 import Avatar from '../components/shared/Avatar';
 import Button from '../components/shared/Button';
@@ -9,8 +10,12 @@ import { users } from '../data/mockData'; // Temporary, for currentUser
 
 const Home = () => {
   const [postContent, setPostContent] = useState('');
-  const { loading, error, data } = useQuery(GET_POSTS);
-  const currentUser = users[0]; // Temporary
+  const { data: postsData, loading: postsLoading, error: postsError } = useQuery(GET_POSTS);
+  const { data: userData, loading: userLoading, error: userError } = useQuery(GET_USER, {
+    variables: { userId: 1 },
+  });
+
+
 
   const handlePostSubmit = (e) => {
     e.preventDefault();
@@ -21,17 +26,48 @@ const Home = () => {
     setPostContent('');
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :(</p>;
+    if (postsLoading || userLoading) return <div className="flex justify-center p-8"><p>Loading...</p></div>;
+    if (postsError) return <div className="text-red-500 p-4">Error loading posts: {postsError.message}</div>;
+    if (userError) return <div className="text-red-500 p-4">Error loading user data: {userError.message}</div>;
 
-  const posts = data.posts;
+    console.log("PostsData ",postsData)
+    const posts = postsData?.allPosts || [];
+  const currentUser = userData?.user;
+    console.log("currentUser ", userData);
+    // if (!currentUser) {
+    //     return <div className="text-red-500 p-4">User not authenticated</div>;
+    // }
 
-  return (
+    const transformedPosts = posts.map(post => ({
+        post_id: post.postId,
+        post_content: post.content,
+        posted_at: post.postedAt,
+        posted_by: post.postedBy,
+        reactions: post.reactions?.map(reaction => ({
+            reaction: reaction.reaction,
+            reacted_by: reaction.reactedBy
+        })) || [],
+        comments: post.comments?.map(comment => ({
+            comment_id: comment.commentId,
+            comment_content: comment.content,
+            commented_at: comment.commentedAt,
+            commented_by: comment.commentedBy,
+            replies: comment.replies?.map(reply => ({
+                comment_id: reply.commentId,
+                comment_content: reply.content,
+                commented_at: reply.commentedAt,
+                commented_by: reply.commentedBy
+            })) || []
+        })) || []
+    }));
+
+
+    return (
     <div className="space-y-4">
       {/* Create Post */}
       <div className="bg-white rounded-lg shadow p-4">
         <div className="flex items-center space-x-2 mb-4">
-          <Avatar src={currentUser.profile_pic} alt={currentUser.name} size="md" />
+          <Avatar src={currentUser.profilePic} alt={currentUser.name} size="md" />
           <button 
             onClick={() => document.getElementById('postInput').focus()}
             className="flex-1 bg-facebook-100 hover:bg-facebook-200 text-facebook-600 text-left p-2 rounded-full transition-colors"
@@ -98,7 +134,7 @@ const Home = () => {
 
       {/* Posts Feed */}
       <div className="space-y-4">
-        {posts.map((post) => (
+        {transformedPosts.map((post) => (
           <Post key={post.post_id} post={post} />
         ))}
       </div>

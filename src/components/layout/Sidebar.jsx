@@ -1,5 +1,5 @@
 import React from 'react';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { GET_USER, GET_GROUPS } from '../../graphql/queries';
 import { 
   UserGroupIcon, 
@@ -20,7 +20,6 @@ const Sidebar = () => {
   const { loading: userLoading, error: userError, data: userData } = useQuery(GET_USER, {
     variables: { userId: 1 },
   });
-  const { loading: groupsLoading, error: groupsError, data: groupsData } = useQuery(GET_GROUPS);
 
   const sidebarItems = [
     { icon: UserGroupIcon, label: 'Friends', color: 'text-blue-500' },
@@ -33,11 +32,11 @@ const Sidebar = () => {
     { icon: ShoppingBagIcon, label: 'Marketplace', color: 'text-green-500' },
   ];
 
-  if (userLoading || groupsLoading) return <p>Loading...</p>;
-  if (userError || groupsError) return <p>Error :(</p>;
+  if (userLoading) return <p>Loading...</p>;
+  if (userError) return <p>Error :(</p>;
 
   const currentUser = userData.user;
-  const groups = groupsData.groups;
+  // const groups = groupsData.groups;
 
   return (
     <div className="hidden md:flex flex-col w-64 p-2 overflow-y-auto h-screen sticky top-16">
@@ -91,12 +90,12 @@ const Sidebar = () => {
       <div className="px-2 py-1">
         <h3 className="text-facebook-500 font-semibold text-sm">Your Shortcuts</h3>
         <div className="mt-2">
-          {groups.map((group) => (
-            <div key={group.group_id} className="flex items-center p-2 hover:bg-facebook-200 rounded-lg cursor-pointer">
-              <div className="w-8 h-8 bg-facebook-200 rounded-md"></div>
-              <span className="ml-3">{group.name}</span>
-            </div>
-          ))}
+          {/*{groups.map((group) => (*/}
+          {/*  <div key={group.group_id} className="flex items-center p-2 hover:bg-facebook-200 rounded-lg cursor-pointer">*/}
+          {/*    <div className="w-8 h-8 bg-facebook-200 rounded-md"></div>*/}
+          {/*    <span className="ml-3">{group.name}</span>*/}
+          {/*  </div>*/}
+          {/*))}*/}
         </div>
       </div>
     </div>

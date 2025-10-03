@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { GET_USER } from '../graphql/queries';
 import { CameraIcon, EllipsisHorizontalIcon } from '@heroicons/react/24/outline';
 import Avatar from '../components/shared/Avatar';
@@ -17,6 +17,7 @@ const Profile = () => {
   if (error) return <p>Error :(</p>;
 
   const user = data.user;
+  console.log("user ",user);
   const userPosts = user.posts;
   const friends = user.friends;
 
